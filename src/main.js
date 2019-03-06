@@ -27,6 +27,9 @@ Vue.use(VueRouter);
 
 Vue.config.productionTip = false;
 
+// 给axios给次请求自动加上域名
+axios.defaults.baseURL = 'http://localhost:8899';
+
 //配置路由
 const routes = [
         { path: "/", redirect: "/admin" },

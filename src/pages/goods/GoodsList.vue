@@ -5,11 +5,11 @@
             <div>
                 <!-- 跳转到新增商品 -->
                 <el-button @click="handleToGoodsAdd">新增</el-button>
-                <el-button >删除</el-button>
+                <el-button @click="handleDelete(idsStr)">删除</el-button>
             </div>
             <!-- 搜索框 -->
             <div>
-                <el-input placeholder="请输入内容" v-model="input5" >
+                <el-input placeholder="请输入内容" v-model="searchvalue" >
                     <el-button slot="append" icon="el-icon-search"></el-button>
                 </el-input>
             </div>
@@ -29,20 +29,16 @@
             <el-table-column label="操作" width="180">
                 <template slot-scope="scope"> 
                     <el-button size="mini"  @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                    <el-button size="mini"  type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                    <el-button size="mini"  type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
     </div>
 </template>
 
-<script>
-export default {
-
-}
-</script>
 
 <script>
+
   export default {
     data(){
         return{
@@ -74,8 +70,8 @@ export default {
                 // this.totalCount=data.totalCount
 
             })
-        }
-      ,handleEdit(index, row) {
+        },
+      handleEdit(index, row) {
         console.log(index, row);
       },
       handleDelete(index, row) {
