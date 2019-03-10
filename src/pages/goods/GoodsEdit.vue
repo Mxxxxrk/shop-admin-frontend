@@ -70,7 +70,9 @@
                     list-type="picture-card"
                     :on-preview="handlePictureCardPreview"
                     :on-remove="handleRemove"
-                    :on-success="handleFileList">
+                    :on-success="handleFileList"
+                    :file-list="form.fileList"
+                    >
                    
                     <i class="el-icon-plus"></i>
                 </el-upload>
@@ -130,10 +132,39 @@ import { quillEditor } from 'vue-quill-editor'
         //是否预览图片
         dialogVisible: false,
         //类别数据。。。
-        categorys:[]
+        categorys:[],
+        id:''
       }
     },
     mounted(){
+        //动态获取id
+        const { id }=this.$route.params
+        this.id= id
+        //请求商品数据
+        this.$axios({
+          
+           url:`/admin/goods/getgoodsmodel/${id}`,
+
+        }).then((res)=>{
+            const {message}=res.data
+            //初始化表单数据
+            //  console.log(message)
+            this.form= message
+
+            //图片的处理
+            this.imageUrl=message.imgList[0].url
+            //图片库的处理
+            // console.log(this.form.fileList)
+            this.form.fileList=message.fileList.map((v)=>{
+               return{
+                ...v,
+                //覆盖对象里面的url
+                url: `http://localhost:8899` + v.shorturl
+               } 
+            })
+        
+
+        })
         //请求分类数据
         this.$axios({
             method:"GET",
@@ -155,11 +186,13 @@ import { quillEditor } from 'vue-quill-editor'
              withCredentials: true,
         }).then(res => {
             const {message, status} = res.data;
+
             if(status == 0){
                 this.$message({
                     message: message,
                     type: 'success'
                 });
+
                 setTimeout(() => {
                     this.$router.replace("/admin/goods-list")
                 }, 1000)
@@ -186,22 +219,19 @@ import { quillEditor } from 'vue-quill-editor'
 
       //图片墙处理方法
       handleRemove(file, fileList) {
-        console.log(file, fileList);
+       if(fileList.length===0){
+       this.$message({
+            type:"warning",
+            message:"至少保留一张图片"
+        });
+        return
+       }
       },
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
       },
-      //图片相册处理方法
-      onEditorBlur(quill) {
-        console.log('editor blur!', quill)
-      },
-      onEditorFocus(quill) {
-        console.log('editor focus!', quill)
-      },
-      onEditorReady(quill) {
-        console.log('editor ready!', quill)
-      },
+  
     },
     components: {
     quillEditor

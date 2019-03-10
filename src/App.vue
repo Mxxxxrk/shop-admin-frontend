@@ -12,10 +12,11 @@ name:'app',
     // 请求是否登录的接口
     this.$axios({
         url: "/admin/account/islogin",
+         withCredentials: true,
       }).then(res => {
       if(res.data.code === "nologin"){
         // 因为接口永远都是返回nologin，先注释
-        // this.$router.push("/login");
+        this.$router.push("/login");
       }
     })
   }
